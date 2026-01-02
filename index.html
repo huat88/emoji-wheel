@@ -34,20 +34,22 @@
         transform: translate(-50%, -50%);
         background: #fffbeb;
         border: 2px solid #facc15;
-        padding: 30px 50px;
-        font-size: 36px; /* bigger font for balls */
+        padding: 30px 60px;
+        font-size: 36px; /* bigger emojis */
         font-weight: bold;
         color: #111;
         z-index: 1000;
         border-radius: 15px;
         box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         text-align: center;
-        white-space: pre; /* keeps emojis in row */
+        white-space: nowrap; /* keep horizontal row */
+        min-width: 600px; /* longer popup for horizontal row */
+        height: auto;
     }
 
     #resultBox button {
-        margin-top: 20px;
-        padding: 12px 30px;
+        margin-top: 25px;
+        padding: 12px 35px;
         font-size: 22px;
         cursor: pointer;
         border-radius: 8px;
@@ -185,7 +187,9 @@ function showResult() {
     const result = entries[index];
 
     const resultText = document.getElementById("resultText");
-    resultText.innerText = "🎯 Result:\n" + result;
+
+    // display horizontal row
+    resultText.innerText = "🎯 Result:  " + result;
     document.getElementById("resultBox").style.display = "block";
 }
 
