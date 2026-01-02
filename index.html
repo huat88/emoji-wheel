@@ -1,0 +1,125 @@
+<h2>HELLO TEST</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>8 Ball Emoji Wheel</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #f4f6f8;
+    }
+
+    canvas {
+        margin-top: 20px;
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 12px 25px;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    #result {
+        margin-top: 20px;
+        font-size: 22px;
+        font-weight: bold;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>🎡 8 Ball Emoji Wheel</h1>
+<canvas id="wheel" width="500" height="500"></canvas><br>
+<button onclick="spin()">SPIN</button>
+<div id="result"></div>
+
+<script>
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+
+const blue = "🔵";
+const red = "🔴";
+
+// generate 256 combinations
+const entries = [];
+for (let i = 0; i < 256; i++) {
+    let combo = "";
+    for (let b = 7; b >= 0; b--) {
+        combo += (i & (1 << b)) ? red : blue;
+    }
+    entries.push(combo);
+}
+
+const size = canvas.width / 2;
+const center = size;
+const arc = (2 * Math.PI) / entries.length;
+let rotation = 0;
+
+function drawWheel() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    entries.forEach((text, i) => {
+        const angle = rotation + i * arc;
+        ctx.beginPath();
+        ctx.fillStyle = i % 2 === 0 ? "#dbeafe" : "#fee2e2";
+        ctx.moveTo(center, center);
+        ctx.arc(center, center, size, angle, angle + arc);
+        ctx.fill();
+
+        ctx.save();
+        ctx.translate(center, center);
+        ctx.rotate(angle + arc / 2);
+        ctx.textAlign = "right";
+        ctx.font = "12px Arial";
+        ctx.fillStyle = "#000";
+        ctx.fillText(text, size - 10, 5);
+        ctx.restore();
+    });
+
+    // pointer
+    ctx.fillStyle = "black";
+    ctx.beginPath();
+    ctx.moveTo(center - 10, 5);
+    ctx.lineTo(center + 10, 5);
+    ctx.lineTo(center, 30);
+    ctx.fill();
+}
+
+drawWheel();
+
+function spin() {
+    let spinTime = 0;
+    const spinAngle = Math.random() * 2000 + 3000;
+
+    function rotate() {
+        spinTime += 30;
+        rotation += (spinAngle - spinTime) * 0.00005;
+
+        drawWheel();
+
+        if (spinTime < spinAngle) {
+            requestAnimationFrame(rotate);
+        } else {
+            showResult();
+        }
+    }
+    rotate();
+}
+
+function showResult() {
+    const index = Math.floor(
+        entries.length - (rotation % (2 * Math.PI)) / arc
+    ) % entries.length;
+
+    document.getElementById("result").innerText =
+        "🎯 Result: " + entries[index];
+}
+</script>
+
+</body>
+</html>
